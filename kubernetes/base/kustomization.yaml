@@ -1,0 +1,10 @@
+namespace: mizotakhteh
+
+resources:
+  - book-mongodb-cm.yaml
+  - book-mongodb-dep.yaml
+  - book-mongodb-svc.yaml
+  - book-cm.yaml
+  - book-dep.yaml
+  - book-svc.yaml
+  - book-ing.yaml

@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: book
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: book
+  template:
+    metadata:
+      labels:
+        app: book
+    spec:
+      containers:
+        - name: book
+          image: ghcr.io/mizotakhteh/book
+          imagePullPolicy: Always
+          envFrom:
+            - configMapRef:
+                name: book
+          ports:
+            - name: http
+              containerPort: 8080
+          livenessProbe:
+            httpGet:
+              path: /actuator/health/liveness
+              port: 8080
+            initialDelaySeconds: 180
+          readinessProbe:
+            httpGet:
+              path: /actuator/health/readiness
+              port: 8080
+          resources:
+            limits:
+              cpu: 150m
+              memory: 300Mi
+            requests:
+              cpu: 0m
+              memory: 0Mi

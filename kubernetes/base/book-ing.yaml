@@ -1,0 +1,22 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: book
+  annotations:
+    ingress.kubernetes.io/ssl-redirect: "true"
+spec:
+  tls:
+    - hosts:
+        - api.mizotakhteh.ml
+      secretName: mizotakhteh-tls
+  rules:
+    - host: api.mizotakhteh.ml
+      http:
+        paths:
+          - path: /books
+            pathType: Prefix
+            backend:
+              service:
+                name: book
+                port:
+                  number: 8080

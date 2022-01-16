@@ -1,0 +1,27 @@
+spring:
+  data:
+    mongodb:
+      database: bookdb
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: https://dev-41tfcxyn.us.auth0.com/
+auth0:
+  audience: https://api.mizotakhteh.ml/
+mongock:
+  change-logs-scan-package:
+    - ml.mizotakhteh.book.config.dbmigrations
+management:
+  endpoint:
+    health:
+      probes:
+        enabled: true
+  health:
+    livenessState:
+      enabled: true
+    readinessState:
+      enabled: true
+springdoc:
+  webjars:
+    prefix: "books/docs"

@@ -1,0 +1,47 @@
+name: Main
+on: push
+
+jobs:
+  build-and-package:
+    runs-on: ubuntu-latest
+    container:
+      image: gradle:jdk
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Build and package
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gradle jib \
+          -Djib.to.auth.username=${{ github.actor }} \
+          -Djib.to.auth.password=${{ secrets.GITHUB_TOKEN }} \
+          --image=ghcr.io/${{ github.repository }}
+
+  homesys-deploy:
+    needs: [build-and-package]
+    runs-on: ubuntu-latest
+    container:
+      image: bitnami/kubectl
+    services:
+      tor:
+        image: dperson/torproxy
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Kubernetes server address
+        run: kubectl config set-cluster homesys-tor --server=${{ secrets.HOMESYS_TOR_ADDRESS }}
+      - name: Set up Kubernetes clusters certificate authority data
+        run: kubectl config set clusters.homesys-tor.certificate-authority-data ${{ secrets.HOMESYS_CA_K8S }}
+      - name: Set up github service account tocken
+        run: kubectl config set-credentials github --token=${{ secrets.GH_SA_TOKEN }}
+      - name: Set up default config context
+        run: kubectl config set-context default --cluster=homesys-tor --user=github
+      - name: Use default context
+        run: kubectl config use-context default
+      - name: Deploy microservice into the homesys Kubernetes cluster
+        env:
+          HTTP_PROXY: http://tor:8118
+          HTTPS_PROXY: http://tor:8118
+          ALL_PROXY: socks5://tor:8118
+        run: kubectl --tls-server-name 'homesys' apply -k kubernetes/overlays/homesys

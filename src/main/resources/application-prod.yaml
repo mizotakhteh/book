@@ -1,0 +1,6 @@
+spring:
+  data:
+    mongodb:
+      host: ${MONGODB_HOST:book-mongodb}
+      username: ${MONGODB_USERNAME:root}
+      password: ${MONGODB_PASSWORD:root}

@@ -1,0 +1,30 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: book-mongodb
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: book-mongodb
+  template:
+    metadata:
+      labels:
+        app: book-mongodb
+    spec:
+      containers:
+        - name: book-mongodb
+          image: bitnami/mongodb:4.4
+          envFrom:
+            - configMapRef:
+                name: book-mongodb
+          ports:
+            - name: tcp
+              containerPort: 27017
+          resources:
+            limits:
+              cpu: 100m
+              memory: 300Mi
+            requests:
+              cpu: 0m
+              memory: 0Mi

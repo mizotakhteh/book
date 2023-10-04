@@ -1,0 +1,25 @@
+name: Main
+on: push
+
+jobs:
+  debug-build:
+    runs-on: ubuntu-latest
+
+  test:
+    runs-on: ubuntu-latest
+    needs:
+      - debug-build
+
+  release-build:
+    runs-on: ubuntu-latest
+
+  package:
+    runs-on: ubuntu-latest
+    needs:
+      - release-build
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs:
+      - test
+      - package

@@ -5,6 +5,12 @@ jobs:
   debug-build:
     runs-on: ubuntu-latest
     steps:
+      - name: Install the latest nightly of the Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          override: true
+          target: x86_64-unknown-linux-musl
       - uses: actions/checkout@v4
 
   test:
@@ -17,6 +23,12 @@ jobs:
   release-build:
     runs-on: ubuntu-latest
     steps:
+      - name: Install the latest nightly of the Rust
+        uses: actions-rs/toolchain@v1
+        with:
+          toolchain: nightly
+          override: true
+          target: x86_64-unknown-linux-musl
       - uses: actions/checkout@v4
 
   package:
